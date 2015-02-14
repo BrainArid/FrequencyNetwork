@@ -1,4 +1,4 @@
-filename="Data//coexpressionNetworks//frequencyNetwork_0.2.txt"
+filename="Data//coexpressionNetworks//frequencyNetwork_0.4.txt"
 data <- as.matrix(read.table(file=filename))
 name<-basename(path=filename)
 name <- substr(name,start=0,stop=regexpr(".txt",text=name)[1]-1);
@@ -32,3 +32,5 @@ dev.off();
 numNodes<-dim(data)[1];
 numEdges<-sum(data>0);
 density<-(numEdges)/(numNodes*(numNodes-1));
+numEdges
+density

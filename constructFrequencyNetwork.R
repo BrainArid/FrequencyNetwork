@@ -77,26 +77,27 @@ constructSupportVector <- function(networkAddresses)
   return(supportVector);
 }
 
-#networkAddresses <- c("Data//coexpressionNetworks/test262.txt",
-#                      "Data//coexpressionNetworks/test26.txt",
+#networkAddresses <- c("Data//coexpressionNetworks/test26.txt",
 #                      "Data//coexpressionNetworks/test28.txt",
 #                      "Data//coexpressionNetworks/test29.txt",
 #                      "Data//coexpressionNetworks/test30.txt",
 #                      "Data//coexpressionNetworks/test31.txt");
 
 networkAddresses <- c("Data/coexpressionNetworks/MGH26_spearman_int.txt",
-                      "Data/coexpressionNetworks/MGH262_spearman_int.txt",
                       "Data/coexpressionNetworks/MGH28_spearman_int.txt",
                       "Data/coexpressionNetworks/MGH29_spearman_int.txt",
                       "Data/coexpressionNetworks/MGH30_spearman_int.txt",
                       "Data/coexpressionNetworks/MGH31_spearman_int.txt");
 
-threshold<- 0.3;
-freqNet <- constructFrequencyNetwork(networkAddresses,threshold);
-write.table(x=freqNet,file=paste("Data/coexpressionNetworks/frequencyNetwork_",threshold,".txt"),sep="\t",quote=FALSE,row.names = FALSE,col.names = FALSE);
-write.table(x=names(freqNet),file=paste("Data//coexpressionNetworks/geneOrder_",threshold,".txt"),sep="\t",quote=FALSE);
+for( threshold in c(0.1,0.2,0.3,0.35,0.4))
+{
+  freqNet <- constructFrequencyNetwork(networkAddresses,threshold);
+  write.table(x=freqNet,file=paste("Data/coexpressionNetworks/frequencyNetwork_",threshold,".txt"),sep="\t",quote=FALSE,row.names = FALSE,col.names = FALSE);
+}
+
+write.table(x=names(freqNet),file=paste("Data//coexpressionNetworks/geneOrder.txt"),sep="\t",quote=FALSE);
 rm(freqNet);
 
-#supportVector <- constructSupportVector(networkAddresses);
-#write.table(x=supportVector,file=paste("Data/coexpressionNetworks/supportVector_",threshold,".txt"),sep="\t",quote=FALSE,row.names = FALSE,col.names = FALSE);
+supportVector <- constructSupportVector(networkAddresses);
+write.table(x=supportVector,file=paste("Data/coexpressionNetworks/supportVector.txt"),sep="\t",quote=FALSE,row.names = FALSE,col.names = FALSE);
 

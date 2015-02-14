@@ -8,7 +8,7 @@ topGo_get_geneID2GO <- function()
   # currently this list contains doubled-up genes like: UNQ5830/PRO19650/PRO19816 and MNB/DYRK
   # if you don't have this file get it here: http://geneontology.org/page/download-annotations
   print(getwd());
-  temp <- read.table(file = "Data//Gene_GO_Annotation//gene_association.goa_human",blank.lines.skip = TRUE, comment.char = "!",header = FALSE,sep="\t",fill=TRUE)
+  temp <- read.table(file = "../..//Gene_GO_Annotation//gene_association.goa_human",blank.lines.skip = TRUE, comment.char = "!",header = FALSE,sep="\t",fill=TRUE)
   temp <- data.frame(Gene=temp[,3],GOTerm=temp[,5])
   allGenes <- unique(temp[,1])
   geneID2GO <- list()
@@ -59,18 +59,40 @@ topGOEnrich <- function(genesOfInterest, geneID2GO)
   
   return(list(BP=GO_BP.allRes,MF=GO_MF.allRes,CC=GO_CC.allRes));
 }
+setwd("Data/codensedModules/frequencyNetwork_0.3/")
+files<- list.files(pattern='*FO$')
+geneMap <- read.table(file="../../coexpressionNetworks/geneOrder.txt")
 
-maxColumns<- max(count.fields(file="Data//codensedModules//G=5_E=2_D=0.3_Q=0.3_B=0.3_S=80_C=0.6.modulesFO"))
-moduleIndecies <- read.table(file="Data//codensedModules//G=5_E=2_D=0.3_Q=0.3_B=0.3_S=80_C=0.6.modulesFO",fill=TRUE,header=FALSE,colClasses=as.character(rep("numeric",maxColumns)))
-
-geneMap <- read.table(file="Data//coexpressionNetworks//geneOrder.txt")
-
-HGNCModules <-list();
-geneID2GO <- topGo_get_geneID2GO();
-enrichments <- list();
-
-for(i in 1:dim(moduleIndecies)[1])
+for(file in files)
 {
-  HGNCModules[[i]] <- geneMap[as.vector(as.matrix(moduleIndecies[i,c(FALSE,!is.na(moduleIndecies[i,-1]))])),1];
-  enrichments[[i]] <- topGOEnrich(as.character(HGNCModules[[i]]), geneID2GO);
+  print(paste0("Working on file: ", file));
+  
+  maxColumns<- max(count.fields(file=file))
+  if(maxColumns==-Inf)
+    next;
+  
+  moduleIndecies <- read.table(file=file,fill=TRUE,header=FALSE,colClasses=as.character(rep("numeric",maxColumns)))
+  
+  HGNCModules <-list();
+  #geneID2GO <- topGo_get_geneID2GO();
+  #enrichments <- list();
+  numRows <-dim(moduleIndecies)[2]-1;
+  numCols <-dim(moduleIndecies)[1]
+  HGNCModules.m <- matrix(data=rep(x="",times=numRows*numCols),nrow=numRows,ncol=numCols,
+                          dimnames=list(
+                            NULL,
+                            unlist(lapply(X=seq(1,numCols),FUN=function(x){return(paste0("module",x))}))));#data.frame(row.names=maxColumns-1,stringsAsFactors=FALSE);
+
+  for(i in 1:dim(moduleIndecies)[1])
+  {
+    genes<-as.character(geneMap[as.vector(as.matrix(moduleIndecies[i,c(FALSE,!is.na(moduleIndecies[i,-1]))]))+1,1]);#the '+1' is to convert from CODENSE's base 0 to R's base 1 gene indexing scheme
+    HGNCModules.m[1:length(genes),i] <- genes;
+  }  
+  text<- apply(X=as.matrix(apply(X=HGNCModules.m,MARGIN=1,FUN=function(x){paste(x,collapse="\t")})),MARGIN=2,FUN=function(x){paste(x,collapse="\n")})
+  text<-paste0(apply(X=as.matrix(colnames(HGNCModules.m)),MARGIN=2,FUN=function(x){paste(x,collapse="\t")}),"\n",text);
+  fileConn<-file(paste0(file,".hgnc.david.module"));
+  writeLines(text=text, fileConn)
+  close(fileConn);
 }
+
+setwd("../../..");
