@@ -9,7 +9,7 @@ constructFrequencyNetwork <- function(networkAddresses, threshold=0.1)
   freqNet <- matrix(data=0,nrow=numFeatures,ncol=numFeatures);
   freqNet <- freqNet + as.integer(net > threshold);
   
-  if(length(networkAddresses > 1))
+  if(length(networkAddresses) > 1)
   {
     for(i in 2:length(networkAddresses))
     {
@@ -89,7 +89,7 @@ networkAddresses <- c("Data/coexpressionNetworks/MGH26_spearman_int.txt",
                       "Data/coexpressionNetworks/MGH30_spearman_int.txt",
                       "Data/coexpressionNetworks/MGH31_spearman_int.txt");
 
-for( threshold in c(0.1,0.2,0.3,0.35,0.4))
+for( threshold in c(0.25))#c(0.1,0.2,0.3,0.35,0.4))
 {
   freqNet <- constructFrequencyNetwork(networkAddresses,threshold);
   write.table(x=freqNet,file=paste("Data/coexpressionNetworks/frequencyNetwork_",threshold,".txt"),sep="\t",quote=FALSE,row.names = FALSE,col.names = FALSE);

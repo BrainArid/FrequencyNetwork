@@ -59,9 +59,9 @@ topGOEnrich <- function(genesOfInterest, geneID2GO)
   
   return(list(BP=GO_BP.allRes,MF=GO_MF.allRes,CC=GO_CC.allRes));
 }
-setwd("Data/codensedModules/frequencyNetwork_0.3/")
+setwd("Data/codensedModules/GSE48865_norm_TPM_spearman_filt_0.0002//")
 files<- list.files(pattern='*FO$')
-geneMap <- read.table(file="../../coexpressionNetworks/geneOrder.txt")
+geneMap <- read.table(file="../../coexpressionNetworks/GSE48865_geneOrder.txt")
 
 for(file in files)
 {
