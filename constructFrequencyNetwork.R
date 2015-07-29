@@ -9,6 +9,7 @@ constructFrequencyNetwork <- function(networkAddresses, threshold=0.1)
   freqNet <- matrix(data=0,nrow=numFeatures,ncol=numFeatures);
   freqNet <- freqNet + as.integer(net > threshold);
   
+  if(length(networkAddresses) > 1)
   {
     for(i in 2:length(networkAddresses))
     {
@@ -76,6 +77,7 @@ constructSupportVector <- function(networkAddresses)
   return(supportVector);
 }
 
+#networkAddresses <- c("Data//coexpressionNetworks/test26.txt",
 #                      "Data//coexpressionNetworks/test28.txt",
 #                      "Data//coexpressionNetworks/test29.txt",
 #                      "Data//coexpressionNetworks/test30.txt",
@@ -87,10 +89,15 @@ networkAddresses <- c("Data/coexpressionNetworks/MGH26_spearman_int.txt",
                       "Data/coexpressionNetworks/MGH30_spearman_int.txt",
                       "Data/coexpressionNetworks/MGH31_spearman_int.txt");
 
+for( threshold in c(0.25))#c(0.1,0.2,0.3,0.35,0.4))
+{
+  freqNet <- constructFrequencyNetwork(networkAddresses,threshold);
+  write.table(x=freqNet,file=paste("Data/coexpressionNetworks/frequencyNetwork_",threshold,".txt"),sep="\t",quote=FALSE,row.names = FALSE,col.names = FALSE);
+}
+
+write.table(x=names(freqNet),file=paste("Data//coexpressionNetworks/geneOrder.txt"),sep="\t",quote=FALSE);
 rm(freqNet);
 
-#supportVector <- constructSupportVector(networkAddresses);
-#write.table(x=supportVector,file=paste("Data/coexpressionNetworks/supportVector_",threshold,".txt"),sep="\t",quote=FALSE,row.names = FALSE,col.names = FALSE);
 supportVector <- constructSupportVector(networkAddresses);
 write.table(x=supportVector,file=paste("Data/coexpressionNetworks/supportVector.txt"),sep="\t",quote=FALSE,row.names = FALSE,col.names = FALSE);
 
