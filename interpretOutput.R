@@ -60,8 +60,9 @@ topGOEnrich <- function(genesOfInterest, geneID2GO)
   return(list(BP=GO_BP.allRes,MF=GO_MF.allRes,CC=GO_CC.allRes));
 }
 
-maxColumns<- max(count.fields(file="Data//codensedModules//G=5_E=2_D=0.3_Q=0.3_B=0.3_S=80_C=0.6.modulesFO"))
-moduleIndecies <- read.table(file="Data//codensedModules//G=5_E=2_D=0.3_Q=0.3_B=0.3_S=80_C=0.6.modulesFO",fill=TRUE,header=FALSE,colClasses=as.character(rep("numeric",maxColumns)))
+fileName<-"Data/codensedModules/frequencyNetwork_0.3/G=5_E=3_D=0.0_Q=0.4_B=0.4_S=80_C=0.6.modulesFO"
+maxColumns<- max(count.fields(file=fileName))
+moduleIndecies <- read.table(file=fileName,fill=TRUE,header=FALSE,colClasses=as.character(rep("numeric",maxColumns)))
 
 geneMap <- read.table(file="Data//coexpressionNetworks//geneOrder.txt")
 
@@ -71,6 +72,7 @@ enrichments <- list();
 
 for(i in 1:dim(moduleIndecies)[1])
 {
+  print(paste0("Enriching module ",i," of ",dim(moduleIndecies)[1]))
   HGNCModules[[i]] <- geneMap[as.vector(as.matrix(moduleIndecies[i,c(FALSE,!is.na(moduleIndecies[i,-1]))])),1];
   enrichments[[i]] <- topGOEnrich(as.character(HGNCModules[[i]]), geneID2GO);
 }
