@@ -66,15 +66,27 @@ constructSupportVector <- function(networkAddresses)
 }
 #edit output to fool CODENSE algorithm which sigfaults when only inputting a single network
 doubling=TRUE;
+<<<<<<< HEAD
+=======
+outputSupportVector=FALSE;
+>>>>>>> origin/master
 
 inFile<-"/home/barand/Single_Cell_RNASeq/Data/coexpressionNetworks/GSE48865_norm_TPM_spearman_int.txt";
 if(!doubling)
 {
+<<<<<<< HEAD
   outFile<-"/home/barand/Single_Cell_RNASeq/Data/coexpressionNetworks/GSE48865_norm_TPM_spearman_filt_0.041.txt";
   supOutFile <-"/home/barand/Single_Cell_RNASeq/Data/coexpressionNetworks/GSE48865_supportVector.txt";
 }else
 {
   outFile<-"/home/barand/Single_Cell_RNASeq/Data/coexpressionNetworks/GSE48865_norm_TPM_spearman_filt_0.041_double.txt";
+=======
+  outFile<-"/home/barand/Single_Cell_RNASeq/Data/coexpressionNetworks/GSE48865_norm_TPM_spearman_filt_0.0002.txt";
+  supOutFile <-"/home/barand/Single_Cell_RNASeq/Data/coexpressionNetworks/GSE48865_supportVector.txt";
+}else
+{
+  outFile<-"/home/barand/Single_Cell_RNASeq/Data/coexpressionNetworks/GSE48865_norm_TPM_spearman_filt_0.0002_double.txt";
+>>>>>>> origin/master
   supOutFile <-"/home/barand/Single_Cell_RNASeq/Data/coexpressionNetworks/GSE48865_supportVector_double.txt";
 }
 
@@ -107,6 +119,7 @@ write.table(x=row.names(network),file=paste("/home/barand/Single_Cell_RNASeq/Dat
 rm(network);
 
 print("Generate Support Vector");
+<<<<<<< HEAD
 supportVector <- constructSupportVector(networkAddresses=c(inFile));
 if(doubling)
 {
@@ -114,3 +127,15 @@ if(doubling)
   supportVector[,4] <- supportVector[,3]
 }
 write.table(x=supportVector,file=supOutFile,sep="\t",quote=FALSE,row.names = FALSE,col.names = FALSE);
+=======
+if(outputSupportVector)
+{
+  supportVector <- constructSupportVector(networkAddresses=c(inFile));
+  if(doubling)
+  {
+    #add duplicate column to support vector get around CODENSE's crash when e=1.
+    supportVector[,4] <- supportVector[,3]
+  }
+  write.table(x=supportVector,file=supOutFile,sep="\t",quote=FALSE,row.names = FALSE,col.names = FALSE);
+}
+>>>>>>> origin/master

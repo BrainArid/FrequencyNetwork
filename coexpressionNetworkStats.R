@@ -1,5 +1,7 @@
-filename="Data//coexpressionNetworks//frequencyNetwork_0.2.txt"
+filename="Data/coexpressionNetworks//frequencyNetwork_0.3.txt"
 data <- as.matrix(read.table(file=filename))
+filename="Data//coexpressionNetworks/GSE48865_norm_TPM_spearman_filt_0.041_double.txt"
+data <- as.matrix(read.table(file=filename,sep=",",header=TRUE))
 name<-basename(path=filename)
 name <- substr(name,start=0,stop=regexpr(".txt",text=name)[1]-1);
 
@@ -30,5 +32,19 @@ dev.off();
 
 #density
 numNodes<-dim(data)[1];
-numEdges<-sum(data>0);
+numEdges<-sum(data>=3) - numNodes;
 density<-(numEdges)/(numNodes*(numNodes-1));
+#numEdges<-sum(data[upper.tri(data)]>0);
+#density<-(numEdges)/(numNodes*(numNodes-1) / 2);
+numEdges
+density
+
+#assuming binary matrix input x 0=no edge 1=edge
+plotNodeDegreeHist<-function(x)
+{
+  y<-colSums(x)-1;
+  hist(y[y>0],breaks=100,main=paste0("Degree distribution. |NonZero|=",length(y[y>0])),xlab="Node Degree");
+}
+
+plotNodeDegreeHist(x=((data>=2)+0))
+plotNodeDegreeHist(x=data2>=2)
